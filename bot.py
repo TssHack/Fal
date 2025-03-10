@@ -61,7 +61,12 @@ async def send_fal(event):
         await event.reply("❌ خطایی در دریافت فال رخ داد. لطفاً دوباره امتحان کنید.")
 
 # اجرای ربات با اکانت شخصی
-with client:
-    client.loop.run_until_complete(main())
+async def run_client():
+    await client.start(phone_number)  # ورود به اکانت شخصی
     print("📢 ربات آماده دریافت پیام است...")
-    client.run_until_disconnected()
+    await client.run_until_disconnected()  # اجرای ربات و انتظار برای پیام‌ها
+
+# اجرای ربات در حالت non-blocking
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(run_client())
