@@ -5,8 +5,8 @@ import random
 from telethon import TelegramClient, events
 
 # اطلاعات ربات
-API_ID = 25790571  # جایگزین کن
-API_HASH = "2b95fb1f6f630a83e0712e84ddb337f2"  # جایگزین کن
+api_id = 25790571  # جایگزین کن
+api_hash = "2b95fb1f6f630a83e0712e84ddb337f2"  # جایگزین کن
 # تنظیمات لاگ‌گیری
 logging.basicConfig(level=logging.INFO)
 
