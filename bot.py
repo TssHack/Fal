@@ -11,7 +11,7 @@ api_hash = "2b95fb1f6f630a83e0712e84ddb337f2"  # جایگزین کن
 logging.basicConfig(level=logging.INFO)
 
 # مقداردهی اولیه کلاینت
-client = TelegramClient('my_session', api_id, api_hash)
+bot = TelegramClient('my_session', api_id, api_hash)
 
 # تابع دریافت و ذخیره تصویر فال
 def get_fal_image():
