@@ -4,14 +4,20 @@ import os
 import random
 from telethon import TelegramClient, events
 
-# اطلاعات ربات
+# اطلاعات ورود (از my.telegram.org بگیر)
 api_id = 25790571  # جایگزین کن
 api_hash = "2b95fb1f6f630a83e0712e84ddb337f2"  # جایگزین کن
+phone_number = "+989938553289"  # شماره تلفن خودت
+
 # تنظیمات لاگ‌گیری
 logging.basicConfig(level=logging.INFO)
 
-# مقداردهی اولیه کلاینت
-bot = TelegramClient('my_session', api_id, api_hash)
+# مقداردهی اولیه کلاینت مخصوص اکانت شخصی
+client = TelegramClient("my_session", api_id, api_hash)
+
+async def main():
+    await client.start(phone_number)  # ورود به اکانت شخصی
+    print("✅ اکانت شخصی شما متصل شد!")
 
 # تابع دریافت و ذخیره تصویر فال
 def get_fal_image():
@@ -19,32 +25,42 @@ def get_fal_image():
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()  # بررسی خطاهای HTTP
+        
+        # بررسی نوع محتوا
+        content_type = response.headers.get("Content-Type", "")
+        if "image" not in content_type:
+            logging.error("❌ محتوای دریافتی تصویر نیست!")
+            return None
 
         # تولید نام فایل تصادفی
-        random_number = random.randint(1000, 9999)
-        file_path = f"fal_{random_number}.jpg"
+        file_path = f"fal_{random.randint(1000, 9999)}.jpg"
 
-        # ذخیره تصویر در فایل
+        # ذخیره تصویر
         with open(file_path, "wb") as file:
             file.write(response.content)
 
         return file_path
     except requests.exceptions.RequestException as e:
-        logging.error(f"خطا در دریافت فال: {e}")
+        logging.error(f"❌ خطا در دریافت فال: {e}")
         return None
 
 # هندلر برای پیام "فال"
-@bot.on(events.NewMessage(pattern=r"^فال$"))
+@client.on(events.NewMessage(pattern=r"^فال$"))
 async def send_fal(event):
     image_path = get_fal_image()
     if image_path:
         try:
-            await bot.send_file(event.chat_id, image_path, caption="🔮 فال شما:")
+            await client.send_file(event.chat_id, image_path, caption="🔮 فال شما:")
+        except Exception as e:
+            logging.error(f"❌ خطا در ارسال تصویر: {e}")
+            await event.reply("❌ خطایی در ارسال تصویر فال رخ داد.")
         finally:
             os.remove(image_path)  # حذف فایل بعد از ارسال
     else:
         await event.reply("❌ خطایی در دریافت فال رخ داد. لطفاً دوباره امتحان کنید.")
 
-# اجرای ربات
-print("ربات فعال شد...")
-bot.run_until_disconnected()
+# اجرای ربات با اکانت شخصی
+with client:
+    client.loop.run_until_complete(main())
+    print("📢 ربات آماده دریافت پیام است...")
+    client.run_until_disconnected()
