@@ -7,7 +7,7 @@ from telethon import TelegramClient, events
 # اطلاعات ورود (از my.telegram.org بگیر)
 api_id = 25790571  # جایگزین کن
 api_hash = "2b95fb1f6f630a83e0712e84ddb337f2"  # جایگزین کن
-phone_number = "+989938553289"  # شماره تلفن خودت
+phone_number = "+98XXXXXXXXXX"  # شماره تلفن خودت
 
 # تنظیمات لاگ‌گیری
 logging.basicConfig(level=logging.INFO)
@@ -50,7 +50,8 @@ async def send_fal(event):
     image_path = get_fal_image()
     if image_path:
         try:
-            await client.send_file(event.chat_id, image_path, caption="🔮 فال شما:")
+            # ارسال تصویر به صورت ریپلای به پیام کاربر
+            await event.reply("🔮 فال شما:", file=image_path)
         except Exception as e:
             logging.error(f"❌ خطا در ارسال تصویر: {e}")
             await event.reply("❌ خطایی در ارسال تصویر فال رخ داد.")
